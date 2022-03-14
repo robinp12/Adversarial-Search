@@ -1,0 +1,8 @@
+\BOOKMARK [1][-]{section.1}{Alpha-Beta search \(5 pts\)}{}% 1
+\BOOKMARK [1][-]{section.2}{Fanorona \(35 pts\)}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{A Basic Alpha-Beta Agent \(5 pts on INGInious; nothing to report\)}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Evaluation function \(5 pts\)}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Successors function \(4 pts\)}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Cut-off function \(4 pts\)}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{A Smart Alpha-Beta Agent \(6 pts on INGInious\)}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.6}{Contest \(6 pts on INGInious; 5 pts for report\)}{section.2}% 8
