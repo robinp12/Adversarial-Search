@@ -1,5 +1,6 @@
 
 
+from os import stat
 from core.player import Color
 from fanorona.fanorona_player import FanoronaPlayer
 from fanorona.fanorona_rules import FanoronaRules
@@ -26,14 +27,20 @@ class AI(FanoronaPlayer):
     state s.
     """
     def successors(self, state):
-        pass  # TODO replace by your code
+        possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
+        for action in possible_actions:
+            copy_of_state = deepcopy(state)
+            new_state, isDone = FanoronaRules.act(copy_of_state, action, self.color)
+            if isDone:
+                yield(action, new_state)
+            
 
     """
     The cutoff function returns true if the alpha-beta/minimax
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        pass  # TODO replace by your code
+        
 
     """
     The evaluate function must return an integer value
