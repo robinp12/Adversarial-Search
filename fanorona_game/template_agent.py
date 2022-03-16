@@ -9,7 +9,7 @@ from copy import deepcopy
 
 class AI(FanoronaPlayer):
 
-    name = "Group XX"
+    name = "Group 14"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -40,12 +40,11 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if depth != 0 or FanoronaRules.is_end_game(state):
+        if(depth != 0 or FanoronaRules.is_end_game(state)):
             return True
-        else :
+        else: 
             return False
-        
-
+    
     """
     The evaluate function must return an integer value
     representing the utility function of the board.
