@@ -9,7 +9,7 @@ from copy import deepcopy
 
 class AI(FanoronaPlayer):
 
-    name = "Group XX"
+    name = "Group 14"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -30,9 +30,9 @@ class AI(FanoronaPlayer):
         possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
         for action in possible_actions:
             copy_of_state = deepcopy(state)
-            new_state, isDone = FanoronaRules.act(copy_of_state, action, self.color)
-            if isDone:
-                yield(action, new_state)
+            res = FanoronaRules.act(copy_of_state, action, self.color.value)
+            if not isinstance(res,bool):
+                yield(action, res[0])
             
 
     """
@@ -40,15 +40,17 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        
+        if(depth != 0 or FanoronaRules.is_end_game(state)):
+            return True
+        else: 
+            return False
 
     """
     The evaluate function must return an integer value
     representing the utility function of the board.
     """
     def evaluate(self, state):
-        pass  # TODO replace by your code
-
+        return state.score[self.position]
 
 
 """
