@@ -30,16 +30,20 @@ class AI(FanoronaPlayer):
         possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
         for action in possible_actions:
             copy_of_state = deepcopy(state)
-            new_state, isDone = FanoronaRules.act(copy_of_state, action, self.color)
-            if isDone:
-                yield(action, new_state)
-            
+            result = FanoronaRules.act(copy_of_state, action, self.color.value)
+            if not isinstance(result, bool):
+               yield(action, result[0]) 
+
 
     """
     The cutoff function returns true if the alpha-beta/minimax
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
+        if depth != 0 or FanoronaRules.is_end_game(state):
+            return True
+        else :
+            return False
         
 
     """
@@ -47,8 +51,7 @@ class AI(FanoronaPlayer):
     representing the utility function of the board.
     """
     def evaluate(self, state):
-        pass  # TODO replace by your code
-
+        return state.score[self.position]
 
 
 """
