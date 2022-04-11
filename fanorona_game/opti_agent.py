@@ -1,15 +1,17 @@
 
 
 from os import stat
+from pickle import TRUE
 from core.player import Color
 from fanorona.fanorona_player import FanoronaPlayer
 from fanorona.fanorona_rules import FanoronaRules
 from copy import deepcopy
+import random
 
 
 class AI(FanoronaPlayer):
 
-    name = "Group 14"
+    name = "Opti"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -27,12 +29,27 @@ class AI(FanoronaPlayer):
     state s.
     """
     def successors(self, state):
+        list_of_all_moves=  list()
+
         possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
         for action in possible_actions:
             copy_of_state = deepcopy(state)
             result = FanoronaRules.act(copy_of_state, action, self.color.value)
-            if not isinstance(result, bool):
-               yield(action, result[0]) 
+            if (copy_of_state.score[self.position]>=state.score[self.position] and not isinstance(result, bool) ):
+                better_action = tuple((action, copy_of_state))
+                list_of_all_moves.append(better_action) 
+        
+        list_of_all_moves.sort(key=lambda x: x[1].score[self.position], reverse=True)
+        if(list_of_all_moves[0][1].score[self.position]== list_of_all_moves[-1][1].score[self.position]):
+            random.shuffle(list_of_all_moves)
+            print("list randomized")
+
+        for element in list_of_all_moves:
+            new_state = element[1]
+            print(new_state.score[self.position])
+        return list_of_all_moves
+
+               
 
 
     """

@@ -9,7 +9,7 @@ from copy import deepcopy
 
 class AI(FanoronaPlayer):
 
-    name = "Group 14"
+    name = "Template"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -40,7 +40,7 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if(depth != 0 or FanoronaRules.is_end_game(state)):
+        if(depth >3 or FanoronaRules.is_end_game(state)):
             return True
         else: 
             return False
