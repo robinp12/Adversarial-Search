@@ -29,26 +29,46 @@ class AI(FanoronaPlayer):
     state s.
     """
     def successors(self, state):
-        list_of_all_moves=  list()
+        all_good_moves=  list()
+        all_bad_moves = list()
+
+        #print("\nCurrent score : "+str(state.score[self.position]))
 
         possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
         for action in possible_actions:
             copy_of_state = deepcopy(state)
             result = FanoronaRules.act(copy_of_state, action, self.color.value)
-            if (copy_of_state.score[self.position]>=state.score[self.position] and not isinstance(result, bool) ):
+            if (copy_of_state.score[self.position]>state.score[self.position] and not isinstance(result, bool) ):
                 better_action = tuple((action, copy_of_state))
-                list_of_all_moves.append(better_action) 
-        
-        list_of_all_moves.sort(key=lambda x: x[1].score[self.position], reverse=True)
-        if(list_of_all_moves[0][1].score[self.position]== list_of_all_moves[-1][1].score[self.position]):
-            random.shuffle(list_of_all_moves)
-            print("list randomized")
+                all_good_moves.append(better_action)
+            else:
+                better_action = tuple((action, copy_of_state))
+                all_bad_moves.append(better_action)
+        if all_good_moves :
 
-        for element in list_of_all_moves:
-            new_state = element[1]
-            print(new_state.score[self.position])
-        return list_of_all_moves
-
+            #sort by descending score
+            all_good_moves.sort(key=lambda x: x[1].score[self.position], reverse=True)
+            #check if the first score is equal to the last of the list
+            if(all_good_moves[0][1].score[self.position]== all_good_moves[-1][1].score[self.position]):
+                #if so, it means the list is fill with moves of same scores
+                #randomize to avoid looping
+                random.shuffle(all_good_moves)
+                #print("list randomized")
+            """
+            for element in all_good_moves:
+                print(element)
+                new_state = element[1]
+                print("score : "+str(new_state.score[self.position]))
+            """
+            return all_good_moves
+        else:
+            """
+            for element in all_bad_moves:
+                print(element)
+                new_state = element[1]
+                print("score : "+str(new_state.score[self.position]))"""
+            random.shuffle(all_bad_moves)
+            return all_bad_moves
                
 
 
@@ -57,8 +77,8 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if(depth != 0 or FanoronaRules.is_end_game(state)):
-            return self.evaluate(state), None
+        if(depth ==3 or FanoronaRules.is_end_game(state)):
+            return True
         else: 
             return False
     

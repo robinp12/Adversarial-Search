@@ -40,7 +40,7 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if(depth >3 or FanoronaRules.is_end_game(state)):
+        if(depth !=0 or FanoronaRules.is_end_game(state)):
             return True
         else: 
             return False
