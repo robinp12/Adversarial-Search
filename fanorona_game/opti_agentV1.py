@@ -11,7 +11,7 @@ import random
 
 class AI(FanoronaPlayer):
 
-    name = "Opti"
+    name = "OptiV1"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -67,8 +67,8 @@ class AI(FanoronaPlayer):
                 print(element)
                 new_state = element[1]
                 print("score : "+str(new_state.score[self.position]))"""
-            random.shuffle(all_bad_moves)
-            return all_bad_moves
+            #random.shuffle(all_bad_moves)
+            return all_bad_moves[0:3]
                
 
 
@@ -77,11 +77,18 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if(depth ==3 or FanoronaRules.is_end_game(state)):
-            return True
-        else: 
-            return False
-    
+        depth_max = 3
+        #advantage if player makes the first move
+        if(self.position ==-1):
+            if(depth ==depth_max+2 or FanoronaRules.is_end_game(state)):
+                return True
+            else: 
+                return False
+        else:
+            if(depth ==depth_max or FanoronaRules.is_end_game(state)):
+                return True
+            else: 
+                return False
     """
     The evaluate function must return an integer value
     representing the utility function of the board.

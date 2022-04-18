@@ -1,15 +1,19 @@
 
 
 from os import stat
+from pickle import TRUE
+
+from urllib3 import Retry
 from core.player import Color
 from fanorona.fanorona_player import FanoronaPlayer
 from fanorona.fanorona_rules import FanoronaRules
 from copy import deepcopy
 import random
 
+
 class AI(FanoronaPlayer):
 
-    name = "Template"
+    name = "OptiV2"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -28,15 +32,46 @@ class AI(FanoronaPlayer):
     """
     def successors(self, state):
         all_good_moves=  list()
+        all_bad_moves = list()
+
+        #print("\nCurrent score : "+str(state.score[self.position]))
+
         possible_actions = FanoronaRules.get_player_actions(state, self.color.value)
         for action in possible_actions:
             copy_of_state = deepcopy(state)
             result = FanoronaRules.act(copy_of_state, action, self.color.value)
-            if not isinstance(result, bool):
+            if (copy_of_state.score[self.position]>state.score[self.position] and not isinstance(result, bool) ):
                 better_action = tuple((action, copy_of_state))
                 all_good_moves.append(better_action)
-        random.shuffle(all_good_moves)
-        return all_good_moves
+            else:
+                bad_action = tuple((action, copy_of_state))
+                all_bad_moves.append(bad_action)
+
+        if all_good_moves :
+            #sort by descending score
+            all_good_moves.sort(key=lambda x: x[1].score[self.position], reverse=True)
+            #check if the first score is equal to the last of the list
+            if(all_good_moves[0][1].score[self.position]== all_good_moves[-1][1].score[self.position]):
+                #if so, it means the list is fill with moves of same scores
+                #randomize to avoid looping
+                random.shuffle(all_good_moves)
+                #print("list randomized")
+            """
+            for element in all_good_moves:
+                print(element)
+                new_state = element[1]
+                print("score : "+str(new_state.score[self.position]))
+            """
+            return all_good_moves
+        else:
+            """
+            for element in all_bad_moves:
+                print(element)
+                new_state = element[1]
+                print("score : "+str(new_state.score[self.position]))"""
+            random.shuffle(all_bad_moves)
+            return all_bad_moves
+               
 
 
     """
@@ -44,17 +79,72 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        if(depth !=0 or FanoronaRules.is_end_game(state)):
-            return True
-        else: 
-            return False
-    
+
+        depth_max_first = 6
+        depth_max_second = 7
+        
+        #advantage if player makes the first move
+        if(self.position ==-1):
+            if(depth ==depth_max_first or FanoronaRules.is_end_game(state)):
+                return True
+            else:
+                return False
+        else:
+        
+            if(depth ==depth_max_second or FanoronaRules.is_end_game(state)):
+                return True
+            else: 
+                return False
     """
     The evaluate function must return an integer value
     representing the utility function of the board.
     """
     def evaluate(self, state):
-        return state.score[self.position]
+        adversaire = state.get_next_player()
+
+        all_good_moves=  list()
+
+        #print("\nCurrent score : "+str(state.score[self.position]))
+
+        possible_actions = FanoronaRules.get_player_actions(state, adversaire)
+        for action in possible_actions:
+            copy_of_state = deepcopy(state)
+            result = FanoronaRules.act(copy_of_state, action, adversaire)
+
+            if (copy_of_state.score[adversaire]>state.score[adversaire] and not isinstance(result, bool) ):
+                better_action = copy_of_state.score[adversaire]-state.score[adversaire] 
+                all_good_moves.append(better_action)
+            
+            else:
+                if(self.position == -1):
+                    return (state.score[-1] - state.score[1])
+                else:
+                    return (state.score[1] - state.score[-1])
+
+        coef =0
+        all_occ = [None] * (len(all_good_moves))
+        #print("len :",len(all_good_moves))
+        for i in range(len(all_good_moves)):
+            #print("o")
+            all_occ[i] = all_good_moves.count(i)
+            coef = coef + ((all_occ[i]/len(all_good_moves))*i)
+            """        
+            for element in all_occ:
+            print(element)"""
+        
+        #print(coef)
+        
+        if(self.position == -1):
+            
+            result = state.score[-1] - state.score[1] -coef
+            print(result)
+            return (result)
+        else:
+            result = state.score[1] - state.score[-1] -coef
+            print(result)
+            return (result)
+
+
 
 
 """
