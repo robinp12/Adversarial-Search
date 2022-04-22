@@ -67,8 +67,8 @@ class AI(FanoronaPlayer):
                 print(element)
                 new_state = element[1]
                 print("score : "+str(new_state.score[self.position]))"""
-            #random.shuffle(all_bad_moves)
-            return all_bad_moves[0:3]
+            random.shuffle(all_bad_moves)
+            return all_bad_moves
                
 
 
@@ -77,15 +77,16 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        depth_max = 3
+        depth_max_beginner= 4
+        depth_max_second = 4
         #advantage if player makes the first move
         if(self.position ==-1):
-            if(depth ==depth_max+2 or FanoronaRules.is_end_game(state)):
+            if(depth ==depth_max_beginner or FanoronaRules.is_end_game(state)):
                 return True
             else: 
                 return False
         else:
-            if(depth ==depth_max or FanoronaRules.is_end_game(state)):
+            if(depth ==depth_max_second or FanoronaRules.is_end_game(state)):
                 return True
             else: 
                 return False

@@ -14,7 +14,7 @@ import random
 
 class AI(FanoronaPlayer):
 
-    name = "OptiV2"
+    name = "OptiV3"
 
     def __init__(self, color):
         super(AI, self).__init__(self.name, color)
@@ -80,8 +80,8 @@ class AI(FanoronaPlayer):
     search has to stop and false otherwise.
     """
     def cutoff(self, state, depth):
-        depth_max_beginner= 5
-        depth_max_second = 5
+        depth_max_beginner= 4
+        depth_max_second = 4
         #advantage if player makes the first move
         if(self.position ==-1):
             if(depth ==depth_max_beginner or FanoronaRules.is_end_game(state)):
@@ -98,9 +98,11 @@ class AI(FanoronaPlayer):
     representing the utility function of the board.
     """
     def evaluate(self, state):
-
+        
         player = self.color.value
         adv = self.color.value * (-1)
+        center_cells = [(2,2),(2,3),(2,4),(2,5)]
+        left_and_right_border_cells = [(1,0),(2,0),(3,0),(1,8),(2,8),(3,8)] 
         score = 0
 
         if(self.position == -1):
@@ -114,10 +116,23 @@ class AI(FanoronaPlayer):
         list_of_adv_pieces =  board.get_player_pieces_on_board(Color(adv))
         
         for piece in list_of_our_pieces :
-            #print(piece)
-            score = score + len(FanoronaRules.get_effective_cell_moves(state, piece))
+            
+            if(piece in center_cells):
+                score = score + len(FanoronaRules.get_effective_cell_moves(state, piece))*2
+            elif(piece in left_and_right_border_cells or piece[0] == 0 or piece[0] == 4):
+                score = score + len(FanoronaRules.get_effective_cell_moves(state, piece))
+            else:
+                score = score + len(FanoronaRules.get_effective_cell_moves(state, piece))*1.5
+
+
         for piece in list_of_adv_pieces :
-            score = score - len(FanoronaRules.get_effective_cell_moves(state, piece))
+            if(piece in center_cells):
+                score = score - len(FanoronaRules.get_effective_cell_moves(state, piece))*2
+            elif(piece in left_and_right_border_cells or piece[0] == 0 or piece[0] == 4):
+                score = score - len(FanoronaRules.get_effective_cell_moves(state, piece))
+            else:
+                score = score - len(FanoronaRules.get_effective_cell_moves(state, piece))*1.5
+            
         return score
 
 
